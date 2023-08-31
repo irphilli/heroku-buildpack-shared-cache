@@ -28,4 +28,4 @@ fi
 PATH="$RCLONE_DIR:$PATH"
 
 echo "-----> Running $USER_SCRIPT"
-./$USER_SCRIPT
+.$BUILD_DIR/$USER_SCRIPT

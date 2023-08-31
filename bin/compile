@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+USER_SCRIPT=.heroku/shared-cache.sh
+
+if [[ ! -f "$BUILD_DIR/$USER_SCRIPT" ]]; then
+  echo "-----> $USER_SCRIPT not present; skipping"
+  exit 0
+fi
+
+RCLONE_DIST=rclone-current-linux-amd64
+RCLONE_DIR=$CACHE_DIR/rclone
+
+if [[ ! -d $RCLONE_DIR ]]; then
+  echo "-----> Downloading rclone binary and inserting into \$PATH"
+  curl -O https://downloads.rclone.org/$RCLONE_DIST.zip
+
+  mkdir -p $RCLONE_DIR
+  unzip -j $RCLONE_DIST.zip -d $RCLONE_DIR
+else
+  echo "-----> rclone is already downloaded; skipping"
+fi
+
+PATH="$RCLONE_DIR:$PATH"
+
+echo "-----> Running $USER_SCRIPT"
+./$USER_SCRIPT
